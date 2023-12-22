@@ -39,7 +39,11 @@
               <td>{{ item.codProduto }}</td>
               <td>{{ item.quantidade }}</td>
               <td>
-                <input id="inputQtd" type="number" v-model="itens[index].quantidadeDevolvida"  @input="verificaValor" min="0" placeholder="quantidade devolvida" />
+                <input id="inputQtd" type="number"
+                v-model="itens[index].quantidadeDevolvida"
+                @input="verificaValor"
+                min="0"
+                placeholder="quantidade devolvida" />
               </td>
             </tr>
           </tbody>
@@ -78,6 +82,7 @@ const xmlCalculated = ref<any>();
 const reqDev = ref<FormReq>([]);
 const canSubmit = ref(true);
 const searchFilter = ref('');
+
 // const keycloack = getKeycloakInstance();
 
 watch([itensSelecionados, itens], () => {
@@ -86,14 +91,14 @@ watch([itensSelecionados, itens], () => {
 
 watch('produtoSelecionado', (novoProduto) => {
   // Atualize o valor do input quando o produto selecionado mudar
-  this.$refs.inputProduto.value = novoProduto.valor;
+  itens.value.quantidadeDevolvida = itensSelecionados.value.quantidadeDevolvida;
 });
 
 const filteredItems = computed(() => {
   
   if (searchFilter.value !== '') {
     console.log(typeof(searchFilter.value));
-    console.log(itens.value.filter(item => Number(item.codProduto) === Number(searchFilter.value)));
+    console.log(itens.value.filter(item => Number(item.codProduto) === Number(searchFilter.value) && item.quantidadeDevolvida == searchFilter.value));
   
     const searchValue = searchFilter.value;
   
@@ -117,10 +122,10 @@ const handleSearch = (search) =>{
 
 const verificaValor = () =>{
   const selecionadosLen = itensSelecionados.value.length - 1;
-  canSubmit.value = itensSelecionados.value[selecionadosLen].quantidadeDevolvida <= itensSelecionados.value[selecionadosLen].quantidade;
+  canSubmit.value = itensSelecionados.value[selecionadosLen].quantidadeDevolvida >= itensSelecionados.value[selecionadosLen].quantidade;
 
-  if (!canSubmit.value) {
-    console.error("Quantidade devolvida maior que a quantidade original!");
+  if (canSubmit.value) {
+    console.info("Quantidade devolvida maior que a quantidade original!");
   }
 }
 
